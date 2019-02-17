@@ -2,7 +2,6 @@
 
 #This command takes sequences in fasta files and removes line breaks
 awk '!/^>/ { printf "%s", $0; n = "\n"} /^>/ { print n $0; n="" } END { printf "%s", n } ' barley_transcripts.fa > barley_transcripts_final.fa
-
 #Then this command is used with the fasta file formatted with the above command to pull out transcript sequences by ID
 grep -A 1 -f 7DO_SAMvTcAXM_DE_Genes.txt barley_transcripts_final.fa > 7DO_SAMvTcAXM_DE_Genes.fa
 
@@ -36,3 +35,27 @@ awk 'FNR==NR{start[NR]=$1+0; stop[NR]=$2+0;next} {for (i in start)if ($3<=start[
 
 #Pull BAC IDs for all SNPs in a file
 awk 'FNR==NR{start[NR]=$4+0; stop[NR]=$4+0;next} {for (i in start)if ($3<=start[i] && $4>=stop[i]){print;next}}' 50K_GBS_Merged_Filtered_and_Imputed_TAGS_Chr1.hmp.txt Chr1_AGP_file.tsv > Chr1_BACS.txt
+
+#Unix commands used to pull info out of alignment summaries from Tophat
+echo ${x}
+grep -m2 'Input' ${x} | tail -n1
+grep 'Aligned pairs:' ${x}
+grep -m3 'have multiple alignments' ${x} | tail -n1
+grep 'discordant alignments' ${x}
+
+#ran in a .sh script called grep.sh (run by sh grep.sh), and just copy pasted values into spreadsheet
+for x in *summary.txt;
+do
+echo ${x}
+done
+
+#convert VCF and GTF files to sorted BED files using BEDOPS
+~/software/bin/vcf2bed < HapMap_GBS_50K_Merged_TAGS.vcf > sorted_GBS_50K_Merged_TAGS.vcf.bed
+~/software/bin/gtf2bed < Hv_IBSC_PGSB_v2_Dez2015_final.gtf > Hv_IBSC_PGSB_v2_Dez2015_final.gtf.bed
+
+#change formatting of chromosome numbers to numeric
+sed -i 's/chr1H/1/g' Hv_IBSC_PGSB_v2_Dez2015_final.gtf.bed
+
+#change order of columns and get rid of column #5
+awk '{print $8,$6,$7,$9,$1,$2,$3,$4}' file1.txt > file2.txt
+

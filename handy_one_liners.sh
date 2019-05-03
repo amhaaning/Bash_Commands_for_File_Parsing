@@ -43,7 +43,7 @@ grep 'Aligned pairs:' ${x}
 grep -m3 'have multiple alignments' ${x} | tail -n1
 grep 'discordant alignments' ${x}
 
-#ran in a .sh script called grep.sh (run by sh grep.sh), and just copy pasted values into spreadsheet
+#ran in a .sh script called grep.sh (run by sh grep.sh)
 for x in *summary.txt;
 do
 echo ${x}
